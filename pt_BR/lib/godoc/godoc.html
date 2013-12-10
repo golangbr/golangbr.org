@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+{{with .Tabtitle}}
+  <title>{{html .}} - A linguagem de programação Go</title>
+{{else}}
+<script type="text/javascript">window.initFuncs=[];</script>
+  <title>A linguagem de programação Go</title>
+{{end}}
+<link type="text/css" rel="stylesheet" href="/doc/style.css">
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+{{if .Playground}}
+<script type="text/javascript" src="/lib/godoc/playground.js"></script>
+{{end}}
+<script type="text/javascript" src="/lib/godoc/godocs.js"></script>
+</head>
+<body>
+
+
+<div id="topbar"{{if .Title}} class="wide"{{end}}><div class="container">
+<form method="GET" action="/search">
+<div id="menu">
+<a href="/doc/">Documentação</a>
+<a href="/projeto/">O Projeto</a>
+<a href="/ajuda/">Ajuda</a>
+<a href="http://blog.golang.org">Blog</a>
+{{if .Playground}}
+<a id="playgroundButton" href="http://play.golang.org/" title="Mostrar Go Playground">Play</a>
+{{end}}
+</div>
+<div id="heading"><a href="/">A linguagem de programação Go</a></div>
+</form>
+</div></div>
+
+{{if .Playground}}
+<div id="playground" class="play">
+	<div class="input"><textarea class="code">package main
+
+import "fmt"
+
+func main() {
+	fmt.Println("Olá, 世界")
+}</textarea></div>
+	<div class="output"></div>
+	<div class="buttons">
+		<a class="run" title="Rode este código [shift-enter]">Execute</a>
+		<a class="fmt" title="Formate este código">Formate</a>
+		<a class="share" title="Compartilhe este código"">Compartilhe</a>
+	</div>
+</div>
+{{end}}
+
+<div id="page"{{if .Title}} class="wide"{{end}}>
+<div class="container">
+
+{{with .Title}}
+  <h1>{{html .}}</h1>
+{{end}}
+{{with .Subtitle}}
+  <h2>{{html .}}</h2>
+{{end}}
+
+{{/* The Table of Contents is automatically inserted in this <div>.
+     Do not delete this <div>. */}}
+<div id="nav"></div>
+
+{{/* Body is HTML-escaped elsewhere */}}
+{{printf "%s" .Body}}
+
+<div id="footer">
+Build version {{html .Version}}.<br>
+Exceto quando <a href="http://code.google.com/policies.html#restrictions">comentado</a>,
+o conteúdo desta página está licenciado sob a Licença 
+Creative Commons Attribution 3.0 License,
+e o código está licenciado sob licença <a href="http://golang.org/LICENSE">BSD license</a>.<br>
+<a href="http://golang.org/doc/tos.html">Termos de Serviço</a> | 
+<a href="http://www.google.com/intl/en/policies/privacy/">Política de Privacidade</a>
+</div>
+
+</div><!-- .container -->
+</div><!-- #page -->
+
+</body>
+</html>
+

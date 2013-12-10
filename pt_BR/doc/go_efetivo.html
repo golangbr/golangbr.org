@@ -1,0 +1,288 @@
+<!--{
+	"Title": "Go Efetivo",
+        "Path": "/doc/go_efetivo",
+	"Template": true
+}-->
+
+<h2 id="introduction">Introdução</h2>
+
+<p>
+Go é uma nova linguagem. Embora com idéias emprestadas de
+linguagens existentes, tem propriedades incomuns que fazem programas Go eficazes e
+diferentes em relação de programas escritos em seus parentes.
+A tradução direta de um programa em C++ ou Java em Go
+é susceptível de produzir um resultado satisfatório
+— programas Java são escritos em Java, não Go.
+Por outro lado, pensar sobre o problema a partir de uma perspectiva Go 
+poderá produzir um bem-sucedido, mas bastante diferente
+programa.
+Em outras palavras, Go para ser bem escrito, é importante compreender as suas propriedades
+e expressões idiomáticas.
+Também é importante conhecer as convenções estabelecidas para
+programação em Go, tais como nomes, formatação, 
+estruturação do programa, e assim por diante, de modo que os programas que escreva
+sejam mais fácil para outros programadores Go entenderem.
+</p>
+
+<p>
+Este documento dá dicas para escrever código claro e idiomático.
+Ele aumenta a especificação da <a href="http://golang.org/ref/spec"> linguagem </a>, do
+<a href="http://go-tour-br.appspot.com/"> passeio em Go </a>,
+e <a href="/codigo"> Como escrever Código Go</a>,
+todos os quais devem ser lidos primeiro.
+</p>
+
+<h3 id="examples">Exemplos</h3>
+
+<p>
+Os <a href="http://golang.org/src/pkg/">fontes de pacotes Go</a>
+destinam-se a não servir apenas como a biblioteca de núcleo, 
+mas também como exemplos de como a usar a linguagem.
+Além disso, muitos dos pacotes contêm trabalho, exemplos 
+embutidos ​​que podem ser executados diretamente do site 
+<a href="http://golang.org/">golang.org</a>, como
+<a href="http://golang.org/pkg/strings/#example_Map">este</a> (se
+necessário, clique sobre a palavra "example" para abri-lo).
+Se você tem uma pergunta sobre como abordar um problema ou como algo
+pode ser implementado, a documentação, o código e os exemplos na
+biblioteca pode fornecer respostas, idéias e conceitos.
+</p>
+
+
+<h2 id="formatting">Formatação</h2>
+
+<p>
+Problemas de formatação são os mais controversos
+mas menos consequentes.
+As pessoas podem se adaptar a diferentes estilos de formatação
+mas é melhor se eles não existirem, e
+menos tempo é dedicado ao tema
+se todo mundo adere ao mesmo estilo.
+O problema é a forma de abordar esta utopia sem um longo
+guia de estilo prescritivo.
+</p>
+
+<p>
+Com Go tomamos uma incomum
+perspectiva de deixar a máquina
+cuidar da maioria dos problemas de formatação.
+O programa <code>gofmt</code>
+(também disponível como <code>go fmt</code>, que
+opera no nível do pacote ao invés de nível do arquivo de origem)
+lê um programa Go
+e emite a fonte em um estilo padrão de recuo
+e alinhamento vertical, retenção e se necessário
+reformatação comentários.
+Se você quiser saber como lidar com algum novo layout, 
+execute <code>gofmt</code>, se a resposta não
+parecer boa, reorganize seu programa (ou relate um bug sobre <code>gofmt</code>),
+não trabalhe em torno dele.
+</p>
+
+<p>
+Como um exemplo, não há necessidade de gastar tempo tabulando
+os comentários sobre os campos de uma estrutura.
+<code>gofmt</code> irá fazer isso por você. dada a
+declaração
+</p>
+
+<pre>type T struct {
+    name string // nome do objeto
+    value int // este é o valor
+}
+</pre>
+
+<p>
+<code>gofmt</code> irá alinhar as colunas:
+</p>
+
+<pre>type T struct {
+    name    string // nome do objeto
+    value   int    // este é o valor
+}
+</pre>
+
+<p>
+Todo o código Go nos pacotes padrão foi formatado com gofmt.
+</p>
+
+<p>
+Alguns detalhes de formatação permanecem. Muito resumidamente:
+</p>
+
+<dl>
+  <dt>Recuo</dt>
+  <dd>Usamos tabs para recuo e <code>gofmt</code> emite-os por padrão.
+  Use espaços apenas se for preciso.
+  </dd>
+  <dt>Comprimento da linha</dt>
+  <dd>
+  Go não tem limite para o comprimento da linha. Não se preocupe com um cartão perfurado transbordando.
+  Se uma linha ficar muito longa, quebre-a e dê um recuo (tab) extra.
+  </dd>
+  <dt>Parênteses</dt>
+  <dd>
+  Go precisa de menos parênteses que C e Java: estruturas de controle (<code>if</code>,
+  <code>for</code>, <code>switch</code>) não tem parênteses na
+  sua sintaxe.
+  Além disso, a hierarquia da precedência do operador é menor e mais clara, de modo
+<pre>
+x&lt;&lt;8 + y&lt;&lt;16
+</pre>
+  significa que o espaçamento implica, ao contrário de outras linguagens.
+  </dd>
+</dl>
+
+<h2 id="commentary">Comentários</h2>
+
+<p>
+Go fornece blocos de comentários no estilo C<code>/* */</code>
+ou comentários de linha no estilo C++ <code>//</code>.
+Comentários de linha são a norma;
+blocos de comentários aparecem principalmente como comentários de pacotes, mas
+são úteis dentro de uma expressão ou para desativar grandes trechos de código.
+</p>
+
+<p>
+O programa — e web-server —  <code>godoc</code> processa o
+códigos-fonte Go para extrair a documentação sobre o conteúdo do
+pacote.
+Comentários que aparecem antes das declarações de nível superior, sem novas linhas de separação,
+são extraídos juntamente com a declaração para servir como texto explicativo para o item.
+A natureza e o estilo destes comentários determina a
+qualidade da documentação que <code>godoc</code> produzirá.
+</p>
+
+<p>
+Cada pacote deve ter um <i>pacote comentário</i>, um bloco
+comentado que precede a cláusula do pacote.
+Para pacotes de arquivos múltiplos, o comentário do pacote só precisa se 
+apresentar em um arquivo, e vai aparecer como um todo.
+O comentário embalagem deve apresentar o pacote e
+fornecer informações relevantes para o pacote como um todo.
+Ele será exibido pela primeira vez na página <code>godoc</code> e
+deve definir-se a documentação detalhada que se segue.
+</p>
+
+<pre>/*
+pacote Regexp implementa uma biblioteca simples para expressões regulares.
+
+A sintaxe das expressões regulares aceitas é:
+
+    regexp:
+        concatenation { '|' concatenation }
+    concatenation:
+        { closure }
+    closure:
+        term [ '*' | '+' | '?' ]
+    term:
+        '^'
+        '$'
+        '.'
+        character
+        '[' [ '^' ] character-ranges ']'
+        '(' regexp ')'
+*/
+package regexp
+</pre>
+
+<p>
+Se o pacote é simples, o comentário pacote pode ser breve.
+</p>
+
+<pre>// Caminho do pacote implementa rotinas de utilidade para
+// manipular os caminhos de nome de arquivo separado por barras.
+</pre>
+
+<p>
+Comentários não precisam de formatação extra, como banners de estrelas.
+A saída gerada não pode mesmo ser apresentado em uma fonte de largura fixa, por isso, não dependem
+em espaçamento de alinhamento-<code>godoc</code>, já que <code>gofmt</code>
+cuida disso.
+Os comentários são interpretados em texto simples, de modo que HTML ou outras
+anotações como <code>_this_</code> serão reproduzidas <i>textualmente</i> e não podem
+ser utilizadas.
+Um ajuste que <code>godoc</code> faz é exibir texto recuado
+em uma fonte de largura fixa, adequada para trechos do programa.
+O comentário de pacotes para o
+<a href="http://golang.org/pkg/fmt/"> <code>fmt</code> </a> usa isso para um bom efeito.
+</p>
+
+<p>
+Dependendo do contexto, <code>godoc</code> pode até não
+reformatar os comentários, por isso certifique-se de olhar bem para cima:
+usar ortografia, pontuação e estrutura de sentença,
+quebrar as linhas longas, e assim por diante.
+</p>
+
+<p>
+Dentro de um pacote, qualquer comentário que precede imediatamente uma declaração de nível superior
+serve como um <i>doc comentário</i> para essa declaração.
+Cada nome exportado (capitalizados) de um programa deve
+ter um comentário doc.
+</p>
+
+<p>
+Comentários de documentação trabalham melhores frases completas, que permitem
+uma ampla variedade de apresentações automatizados.
+A primeira frase deve ser um resumo de uma frase que
+inicia-se com o nome que está sendo declarado.
+</p>
+
+<pre>// Compilar analisa uma expressão regular e retorna, se bem sucedida, uma Regexp
+// Objeto que pode ser utilizado para combinar contra texto.
+função Compilar (string str) (regexp * Regexp, err erro) {
+</pre>
+
+<p>
+Se o nome começa sempre com comentário, a saída do <code>godoc</code>
+pode ser útil para ser executado através do <code>grep</code>.
+Imagine que você não consegue lembrar o nome de "compilação", mas estava procurando
+a função de análise de expressões regulares, de modo que você executou
+o comando,
+</p>
+
+<pre>$ godoc regexp | grep parse
+</pre>
+
+<p>
+Se todos os comentários doc no pacote começassem com, "Esta função ...", <code>grep</code>
+não iria ajudá-lo a lembrar o nome. Mas porque o pacote começa cada
+doc comentário com o nome, você veria algo como isso,
+que recorda a palavra que você está procurando.
+</p>
+
+<pre>$ godoc regexp | grep parse
+    Compilar analisa uma expressão regular e retorna, se bem sucedida, uma Regexp
+    analisada. Ele simplifica a inicialização segura de variáveis ​​globais filtrando
+    o que não pode ser analisado. Ele simplifica a inicialização segura de variáveis ​​globais
+$
+</pre>
+
+<p>
+A sintaxe de declaração do Go permite agrupamento de declarações.
+Um único comentário doc pode introduzir um grupo de constantes ou variáveis ​​relacionadas.
+Toda a declaração é apresentada, tal comentário muitas vezes pode ser superficial.
+</p>
+
+<pre>// Os códigos de erro retornados por falhas para analisar uma expressão.
+var (
+    ErrInternal      = errors.New("regexp: internal error")
+    ErrUnmatchedLpar = errors.New("regexp: unmatched '('")
+    ErrUnmatchedRpar = errors.New("regexp: unmatched ')'")
+    ...
+)
+</pre>
+
+<p>
+Mesmo para nomes particulares, agrupamento também pode indicar relações entre os itens,
+como o fato de que um conjunto de variáveis ​​é protegido por um mutex.
+</p>
+
+<pre>var (
+    countLock   sync.Mutex
+    inputCount  uint32
+    outputCount uint32
+    errorCount  uint32
+)
+</pre>

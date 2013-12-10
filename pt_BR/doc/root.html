@@ -1,0 +1,164 @@
+<!--{
+	"Path": "/"
+}-->
+
+<div class="left">
+
+<div id="learn">
+<a class="popout share">Pop-out</a>
+<div class="rootHeading">Tente Go</div>
+<div class="input">
+<textarea spellcheck="false" class="code">// Você pode editar este código!
+// Clique aqui e comece a digitar.
+package main
+
+import "fmt"
+
+func main() {
+	fmt.Println("Olá, 世界")
+}</textarea>
+</div>
+<div class="output">
+<pre>
+Olá, 世界
+</pre>
+</div>
+<div class="buttons">
+<a class="run" href="#" title="Executar este código [shift-enter]">Execute</a>
+<a class="share" href="#" title="Compartilhar este código">Compartilhe</a>
+<a class="tour" href="http://go-tour-br.appspot.com/" title="Aprenda Go pelo seu navegador">Passeie</a>
+</div>
+<div class="toys">
+<select>
+	<option value="ola">Olá, Mundo!</option>
+	<option value="vida">Conway's Game of Life</option>
+	<option value="fib">Fibonacci Closure</option>
+	<option value="peano">Peano Integers</option>
+	<option value="pi">Concurrent pi</option>
+	<option value="sieve">Concurrent Prime Sieve</option>
+	<option value="solitaire">Peg Solitaire Solver</option>
+	<option value="tree">Tree Comparison</option>
+</select>
+</div>
+</div>
+
+</div>
+
+<div class="right">
+
+<div id="about">
+Go é um ambiente de programação de código aberto que faz com que seja fácil de construir software simples, confiável e eficiente.
+</div>
+
+<div id="gopher"></div>
+
+<a href="/instalacao" id="start">
+<span class="big">Baixando Go</span>
+<span class="desc">
+Binários estão disponíveis para<br>
+Linux, Mac OS X, Windows, e mais.
+</span>
+</a>
+
+</div>
+
+<div style="clear: both"></div>
+
+<div class="left">
+
+<div id="feed">
+<div class="rootHeading">Lista de Discussão: Golang Brasil</div>
+<div class="golangbr"></div>
+</div>
+
+</div>
+
+<div class="right">
+
+<div id="blog">
+<div class="rootHeading">Artigos em destaque</div>
+<div class="read"><a href="http://blog.golang.org/">Leia mais</a></div>
+</div>
+
+
+</div>
+
+<div style="clear: both;"></div>
+
+<script type="text/javascript">
+function readableTime(t) {
+	var m = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho",
+		"Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+	var p = t.substring(0, t.indexOf("T")).split("-");
+	var d = new Date(p[0], p[1]-1, p[2]);
+	return d.getDate() + " " + m[d.getMonth()] + " " + d.getFullYear();
+}
+
+function feedLoaded(result) {
+	var blog = document.getElementById("blog");
+	var read = blog.getElementsByClassName("read")[0];
+	for (var i = 0; i < result.length && i < 2; i++) {
+		var entry = result[i];
+		var title = document.createElement("a");
+		title.className = "title";
+		title.href = entry.Link;
+		title.innerHTML = entry.Title;
+		blog.insertBefore(title, read);
+		var extract = document.createElement("div");
+		extract.className = "extract";
+		extract.innerHTML = entry.Summary;
+		blog.insertBefore(extract, read);
+		var when = document.createElement("div");
+		when.className = "when";
+		when.innerHTML = "Publicado " + readableTime(entry.Time);
+		blog.insertBefore(when, read);
+	}
+}
+
+window.initFuncs.push(function() {
+	// Set up playground if enabled.
+	if (window.playground) {
+		window.playground({
+			"codeEl":        "#learn .code",
+			"outputEl":      "#learn .output",
+			"runEl":         "#learn .run",
+			"shareEl":       "#learn .share",
+			"shareRedirect": "http://play.golang.org/p/",
+			"toysEl":        "#learn .toys select"
+		});
+	} else {
+		$('#learn').hide()
+	}
+
+	// Load blog feed.
+	$('<script/>').attr('text', 'text/javascript')
+		.attr('src', 'http://blog.golang.org/.json?jsonp=feedLoaded')
+		.appendTo('body');
+
+	// Set the video at random.
+	var videos = [
+		{h: 241, s: "//www.youtube.com/embed/ytEkHepK08c"}, // Tour of Go
+		{h: 241, s: "//www.youtube.com/embed/f6kdp27TYZs"}, // Concurrency Patterns
+		{h: 233, s: "//player.vimeo.com/video/53221560"},   // Grows with grace
+		{h: 233, s: "//player.vimeo.com/video/69237265"}    // Simple environment
+	];
+	var v = videos[Math.floor(Math.random()*videos.length)];
+	$('#video iframe').attr('height', v.h).attr('src', v.s);
+});
+</script>
+
+<script>
+        var golangbr="";
+	$.ajax({
+  		url      : document.location.protocol + '//ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=10&callback=?&q=' + encodeURIComponent('https://groups.google.com/forum/feed/golang-brasil/topics/rss.xml'),
+  		dataType : 'json',
+  		success  : function (data) {
+    		if (data.responseData.feed && data.responseData.feed.entries) {
+      		$.each(data.responseData.feed.entries, function (i, e) {
+			golangbr = golangbr + "<a href='"+e.link+"' target = '_blank'>"+ e.title + "</a><br>";
+			});
+    			}
+   			$("div.golangbr").html(golangbr);
+  		}
+	});
+</script>

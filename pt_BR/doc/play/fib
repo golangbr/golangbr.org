@@ -1,0 +1,19 @@
+package main
+
+import "fmt"
+
+// fib retorna uma função que retorna
+// sucessivos numeros Fibonacci.
+func fib() func() int {
+	a, b := 0, 1
+	return func() int {
+		a, b = b, a+b
+		return a
+	}
+}
+
+func main() {
+	f := fib()
+	// Chamadas de função são avaliadas da esquerda p/ direita.
+	fmt.Println(f(), f(), f(), f(), f())
+}

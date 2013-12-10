@@ -1,0 +1,284 @@
+<!--{
+	"Title": "Começando",
+	"Path":  "/doc/instalacao"
+}-->
+
+<div id="nav"></div>
+
+<h2 id="download">Baixar a distribuição Go</h2>
+
+<p>
+<a href="http://code.google.com/p/go/downloads" id="start" class="download" target="_blank">
+<span class="big">Baixar Go</span>
+<span class="desc">Clique aqui para visitar a página de downloads</span>
+</a>
+</p>
+
+<p>
+Clique no link acima para visitar a página de downloads do projeto Go e selecione a distribuição binária
+que corresponde ao seu sistema operacional e arquitetura de processador.
+</p>
+
+<p>
+Distribuições oficiais dos binários estão disponíveis para o FreeBSD, Linux, MacOS X 
+(Snow Leopard, Lion e Mountain Lion), NetBSD, e os sistemas operacionais 
+Windows e 32-bit (<code>386</code>) e 64 bits (<code>amd64</code>) arquiteturas 
+de processadores x86.
+</p>
+
+<p>
+Se uma distribuição binária não está disponível para a sua combinação de 
+sistema operacional e arquitetura que você pode querer tentar  <a href="http://golang.org/doc/install/source">instalar a 
+partir do código-fonte</a> ou <a href="http://golang.org/doc/install/gccgo"> instalar gccgo em vez de gc</a> .
+</p>
+
+<h2 id="requirements">Requisitos do sistema</h2>
+<p>
+O compilador <code>gc</code> suporta os seguintes sistemas operacionais e 
+arquiteturas. Verifique se o seu sistema atende a esses requisitos antes de prosseguir. 
+Se o seu sistema operacional ou arquitetura não está na lista , é possível que <code>gccgo</code>
+possa suportar a sua configuração , consulte <a href="http://golang.org/doc/install/gccgo">Configurando e usando gccgo</a> para mais detalhes.
+</p>
+
+<table class="codetable" frame="border" summary="requirements">
+<tr>
+<th align="middle">Sistemas operacionais</th>
+<th align="middle">Arquiteturas</th>
+<th align="middle">Notas</th>
+</tr>
+<tr><td colspan="3"><hr></td></tr>
+<tr><td>FreeBSD 7 ou superior</td> <td>amd64, 386, arm</td> <td>Debian GNU/kFreeBSD não é suportado; FreeBSD/ARM precisa do FreeBSD 10 ou superior</td></tr>
+<tr><td>Linux 2.6.23 ou superior com glibc</td> <td>amd64, 386, arm</td> <td>CentOS/RHEL 5.x não é suportado; sem distribuição binária para ARM ainda</td></tr>
+<tr><td>Mac OS X 10.6/10.7</td> <td>amd64, 386</td> <td>use o gcc<sup>&#8224;</sup> que vem com Xcode<sup>&#8225;</sup></td></tr>
+<tr><td>Windows 2000 ou superior</td> <td>amd64, 386</td> <td>use mingw gcc<sup>&#8224;</sup>; cygwin ou msys não é necessário</td></tr>
+<tr><td>NetBSD 6 ou superior</td> <td>amd64, 386</td> <td></td></tr>
+</table>
+
+<p>
+<sup>&#8224;</sup><code>gcc</code> é necessário apenas se você planeja usar
+<a href="http://golang.org/cmd/cgo">cgo</a>.<br/>
+<sup>&#8225;</sup>Você só precisa instalar as ferramentas de linha de comando para 
+<a href="http://developer.apple.com/Xcode/">Xcode</a>. Se você já tiver instalado o 
+Xcode 4.3+ , você pode instalá-lo a partir da guia Componentes do painel de 
+preferências de Downloads.
+</p>
+
+<h2 id="install">Instale as ferramentas Go</h2>
+
+<p>
+As distribuições binárias de Go presumirão que eles serão instalados em 
+<code>/usr/local/go</code> (ou <code>c:\Go</code> em Windows), mas é 
+possível instalá-los em um local diferente. Se você fizer isso, 
+você vai precisar definir a variável de ambiente GOROOT para esse 
+diretório ao utilizar as ferramentas Go.
+</p>
+
+<p>
+Por exemplo, se você instalou Go para seu diretório home, você deve adicionar 
+os seguintes comandos para <code>$HOME/.profile</code>:
+</p>
+
+<pre>
+export GOROOT=$HOME/go
+export PATH=$PATH:$GOROOT/bin
+</pre>
+
+<p>
+Os usuários do Windows devem ler a seção sobre <a href="#windows_env">como configurar as variáveis 
+​​de ambiente no Windows</a>.
+</p>
+
+<h3 id="bsd_linux">Tarballs FreeBSD, Linux, Mac OS X e NetBSD</h3>
+
+<p>
+Se você estiver atualizando a partir de uma versão anterior do Go
+você deve primeiro remover a versão existente no diretório <code>/usr/local/go</code>:
+</p>
+
+<pre>
+rm -r /usr/local/go
+</pre>
+
+<p>
+Extraia <a href="http://code.google.com/p/go/downloads/list?q=OpSys-FreeBSD+OR+OpSys-Linux+OR+OpSys-OSX+OR+OpSys-NetBSD+Type-Archive">o arquivo</a>
+dentro da <code>/usr/local</code>, criando o diretório Go em <code>/usr/local/go</code>.
+Por exemplo:
+</p>
+
+<pre>
+tar -C /usr/local -xzf go1.1.linux-amd64.tar.gz
+</pre>
+
+<p>
+The name of the archive may differ, depending on the version of Go you are
+installing and your system's operating system and processor architecture.
+O nome do arquivo pode variar, dependendo da versão de Go que você está 
+instalando, sistema operacional e da arquitetura do processador.
+</p>
+
+<p>
+(Normalmente, estes comandos devem ser executados como root ou através do <code>sudo</code>.)
+</p>
+
+<p>
+Adicionar /<code>/usr/local/go/bin</code> na variável de ambiente <code>PATH</code>. 
+Você pode fazer isso adicionando esta linha ao seu <code>/etc/profile</code> (para a instalação em todo o sistema ) ou <code>$HOME/.profile</code>:
+</p>
+
+<pre>
+export PATH=$PATH:/usr/local/go/bin
+</pre>
+
+<h3 id="osx">Instalador de pacotes Mac OS X</h3>
+
+<p>
+Abra o <a href="http://code.google.com/p/go/downloads/list?q=OpSys-OSX+Type-Installer">arquivo de pacote</a>
+e siga as instruções para instalar as ferramentas Go. O pacote instala a distribuição go em <code>/usr/local/go</code>.
+</p>
+
+<p>
+O pacote deve colocar o diretório <code>/usr/local/go/bin</code> na variável de ambiente <code>PATH</code>. 
+Você pode precisar reiniciar as sessões de terminal abertas para que a alteração tenha efeito.
+</p>
+
+<h3 id="windows">Windows</h3>
+
+<p>
+O projeto Go oferece duas opções de instalação para usuários do Windows 
+(além da <a href="http://golang.org/doc/install/source">instalação pelo código-fonte</a>): 
+um arquivo zip que necessita definir algumas variáveis ​​de ambiente 
+e um instalador MSI experimental que configura a sua instalação automaticamente.
+</p>
+
+<h4 id="windows_zip">Arquivo Zip</h4>
+
+<p>
+Extraia o <a href="http://code.google.com/p/go/downloads/list?q=OpSys-Windows+Type%3DArchive">arquivo zip</a> para o diretório de sua escolha (sugerimos <code>c:\Go</code>).
+</p>
+
+<p>
+
+Se você escolher um diretório diferente de <code>c:\Go</code>, 
+você deve definir a variável de ambiente <code>GOROOT</code> para o seu caminho escolhido.
+</p>
+
+<p>
+Adicione o subdiretório <code>bin</code> da raiz Go (por exemplo, <code>c:\Go\bin</code>) para a variável de ambiente <code>PATH</code>.
+</p>
+
+<h4 id="windows_msi">Instalador MSI (experimental)</h4>
+
+<p>
+Abra o <a href="http://code.google.com/p/go/downloads/list?q=OpSys-Windows+Type%3DInstaller">arquivo MSI</a>
+e siga as instruções para instalar as ferramentas Go. 
+Por padrão, o instalador coloca a distribuição Go em <code>c:\Go</code>.
+</p>
+
+<p>
+O instalador deve colocar o <code>c:\Go\bin</code> na variável de ambiente PATH. 
+Pode ser necessário reiniciar qualquer prompts de comando aberto para que a alteração tenha efeito.
+</p>
+
+<h4 id="windows_env">Definindo suas variáveis ambiente no Windows</h4>
+
+<p>
+No Windows você pode definir variáveis ​​de ambiente através do botão "Variáveis ​​de Ambiente " 
+na aba " Avançado" do painel de controle  do "Sistema" . Algumas versões do Windows fornecem 
+este painel de controle através da opção "Configurações Avançadas de Sistema" dentro do painel 
+de controle em "Sistema" .
+</p>
+
+<h2 id="testing">Testando sua instalação</h2>
+
+<p>
+Verifique se Go foi corretamente instalado construindo um programa simples, como se segue.
+</p>
+
+<p>
+Crie um arquivo chamado <code>ola.go</code> e ponha o programa a seguir dentro dele:
+</p>
+
+<pre>
+package main
+
+import "fmt"
+
+func main() {
+    fmt.Printf("olá, mundo\n")
+}
+</pre>
+
+<p>
+Então rode isso com a ferramenta <code>go</code>:
+</p>
+
+<pre>
+$ go run ola.go
+olá, mundo
+</pre>
+
+<p>
+Se você ver a mensagem "olá, mundo" então sua instalação Go está funcionando.
+</p>
+
+<h2 id="gopath">Configurando seu ambiente de trabalho</h2>
+
+<p>
+Você quase acabou.
+Só precisa configurar mais algumas coisas.
+</p>
+
+<p>
+<a href="/doc/codigo" class="download" id="start">
+<span class="big">Como escrever código Go</span>
+<span class="desc">Aprenda como configurar e usar as ferramentas de Go</span>
+</a>
+</p>
+
+<p>
+O documento <a href="/codigo">Como escrever código Go</a> dá <b>instruções essenciais de como configurar</b> um ambiente de trabalho para construir e testar código Go.
+</p>
+
+<h2 id="next">Próximo passo</h2>
+
+<p>
+Comece dando <a href="http://go-tour-br.appspot.com">um passeio por Go</a>.
+</p>
+
+<p>
+Construia uma aplicação web, seguindo o <a href="http://golang.org/doc/articles/wiki/">Tutorial 
+Wiki</a>.
+</p>
+
+<p>
+Leia <a href="/doc/go_efetivo">Go Efetivo</a> para aprender sobre como escrever código 
+Go idiomático.
+</p>
+
+<p>
+Para mais, consulte a extensa <a href="/doc">documentação</a>  de Go.
+</p>
+
+<p>
+Assine a lista de discussão 
+<a href="http://groups.google.com/group/golang-announce">golang-announce</a>
+para ser notificado quando uma nova versão estável de Go é liberada.
+</p>
+
+
+<h2 id="community">Recursos comunitários</h2>
+
+<p>
+Para obter ajuda em tempo real, pode haver usuários ou desenvolvedores 
+no <code>#go-nuts</code> no servidor IRC da <a href="http://freenode.net/">Freenode</a> 
+</p>
+
+<p>
+A lista de discussão oficial para discussão da linguagem Go é a
+<a href="http://groups.google.com/group/golang-nuts">Go Nuts</a>.
+</p>
+
+<p>
+Erros devem ser reportados utilizando o
+<a href="http://code.google.com/p/go/issues/list">Go issue tracker</a>.
+</p>

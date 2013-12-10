@@ -1,0 +1,585 @@
+<!--{
+	"Title": "Como escrever código Go",
+        "Path":  "/doc/codigo"
+}-->
+
+<h2 id="Introduction">Introdução</h2>
+<p>
+Este documento demonstra o desenvolvimento de um pacote Go simples e apresenta a ferramenta 
+<a href="http://golang.org/cmd/go/">go</a>, a maneira padrão de buscar, construir e 
+instalar pacotes Go e comandos.
+</p>
+
+<p>
+A ferramenta <code>go</code> exige que você organize seu código de uma maneira específica. 
+Por favor, leia este documento cuidadosamente. Ele explica a maneira mais simples de 
+se organizar e rodar com a sua instalação Go.
+</p>
+
+<p>
+Uma explicação semelhante está disponível como
+<a href="http://www.youtube.com/watch?v=XCsL89YtqCs">screencast</a>.
+</p>
+
+
+<h2 id="Organization">Organização do código</h2>
+
+<h3 id="Workspaces">Áreas de trabalho</h3>
+
+<p>
+A ferramenta <code>go</code> é projetado para trabalhar com o código fonte aberto 
+mantido em repositórios públicos. Embora você não precise publicar o seu código, 
+o modelo de como o ambiente está configurado funciona da mesma forma se você fize-lo 
+ou não.
+</p>
+
+<p>
+Código Go deve ser mantido dentro de uma área de trabalho. Uma área de trabalho é uma 
+hierarquia de diretórios com três diretórios em sua raiz:
+</p>
+
+<ul>
+<li><code>src</code> contém os arquivos Go de origem organizados em pacotes (um pacote por diretório),
+<li><code>pkg</code> contém objetos de pacote, e
+<li><code>bin</code> contém os comandos executáveis.
+</ul>
+
+<p>
+A ferramenta <code>go</code> constrói pacotes fonte e instala os binários 
+resultantes nos diretórios <code>pkg</code> e <code>bin</code>.
+</p>
+
+<p>
+O subdiretório <code>src</code> normalmente contém vários repositórios de controle 
+de versão (como Git e Mercurial) que acompanham o desenvolvimento de um ou mais 
+pacotes fonte.
+</p>
+
+<p>
+Para lhe dar uma idéia de como uma área de trabalho parece na prática, aqui está um exemplo:
+</p>
+
+<pre>
+bin/
+    streak                         # comando executável
+    todo                           # comando executável
+pkg/
+    linux_amd64/
+        code.google.com/p/goauth2/
+            oauth.a                # objeto do pacote
+        github.com/nf/todo/
+            task.a                 # objeto do pacote
+src/
+    code.google.com/p/goauth2/
+        .hg/                       # metadados do repositório mercurial
+        oauth/
+            oauth.go               # código do pacote
+            oauth_test.go          # código do teste
+    github.com/nf/
+        streak/
+            .git/                  # metadados do repositório git
+            oauth.go               # código do comando
+            streak.go              # código do comando
+        todo/
+            .git/                  # metadados do repositório git
+            task/
+                task.go            # código do pacote
+            todo.go                # código do comando
+</pre>
+
+<p>
+Esta área de trabalho contém três repositórios (<code>goauth2</code>,
+<code>streak</code>, e <code>todo</code>) que compreendem dois comandos 
+(<code>streak</code> e <code>todo</code>) e duas bibliotecas 
+(<code>oauth</code> e <code>task</code>).
+</p>
+
+<p>
+Executáveis e bibliotecas são construídos a partir de diferentes tipos de fontes de pacotes. 
+Vamos discutir a distinção mais <a href="#PackageNames">tarde</a>.
+</p>
+
+
+<h3 id="GOPATH">A variável de ambiente <code>GOPATH</code></h3>
+
+<p>
+A variável de ambiente <code>GOPATH</code> especifica a localização do sua área de trabalho. 
+É provável que seja a única variável de ambiente que você precise definir quando desenvolver código Go.
+</p>
+
+<p>
+Para começar, crie um diretório de trabalho e defina <code>GOPATH</code> respectivamente. 
+Seu espaço de trabalho pode ser localizado onde você quiser, mas vamos usar <code>$HOME/go</code>
+neste documento. Note-se que este <b>não</b> deve ser o mesmo caminho da sua instalação Go.
+</p>
+
+<pre>
+$ <b>mkdir $HOME/go</b>
+$ <b>export GOPATH=$HOME/go</b>
+</pre>
+
+<p>
+Para maior comodidade, adicione o subdiretório <code>bin</code> da área de trabalho ao seu <code>PATH</code>:
+</p>
+
+<pre>
+$ <b>export PATH=$PATH:$GOPATH/bin</b>
+</pre>
+
+
+<h3 id="PackagePaths">Caminho dos pacotes</h3>
+
+<p>
+Os pacotes da biblioteca padrão são caminhos curtos, como <code>"fmt"</code> e <code>"net/http"</code>.
+Para seus próprios pacotes, você deve escolher um caminho base que é improvável a colidir 
+com futuras adições à biblioteca padrão ou outras bibliotecas externas.
+</p>
+
+<p>
+Se você manter o seu código em um repositório de origem em algum lugar, então você 
+deve usar a raiz do que repositório de origem como o seu caminho base. Por exemplo, 
+se você tiver uma conta no <a href="https://github.com/">GitHub</a>, 
+<code>github.com/user</code> deverá ser o seu caminho base.
+</p>
+
+<p>
+Note que você não precisa publicar o seu código para um repositório remoto 
+para que você possa construir. É apenas um bom hábito de organizar seu código 
+como se você fosse publicá-lo um dia. Na prática, você pode escolher qualquer nome 
+do caminho arbitrário, contanto que ele seja exclusivo para a biblioteca padrão e
+demais ecossistema Go.
+</p>
+
+<p>
+Usaremos <code>github.com/user</code> como o nosso caminho base. 
+Crie um diretório dentro da sua área de trabalho para manter o código-fonte:
+</p>
+
+<pre>
+$ <b>mkdir -p $GOPATH/src/github.com/user</b>
+</pre>
+
+
+<h3 id="Command">Seu primeiro programa</h3>
+
+<p>
+Para compilar e executar um programa simples, em primeiro lugar escolha o caminho do pacote 
+(vamos usar <code>github.com/user/ola</code>) e crie o diretório do pacote correspondente 
+dentro de sua área de trabalho:
+</p>
+
+<pre>
+$ <b>mkdir $GOPATH/src/github.com/user/ola</b>
+</pre>
+
+<p>
+Em seguida, crie um arquivo chamado <code>ola.go</code> dentro desse diretório, 
+contendo o seguinte código Go.
+</p>
+
+<pre>
+package main
+
+import "fmt"
+
+func main() {
+	fmt.Printf("Olá, mundo.\n")
+}
+</pre>
+
+<p>
+Agora você pode construir e instalar o programa com a ferramenta <code>go</code>:
+</p>
+
+<pre>
+$ <b>go install github.com/user/ola</b>
+</pre>
+
+<p>
+Note que você pode executar este comando a partir de qualquer lugar em seu sistema. 
+A ferramenta <code>go</code> encontrará o código-fonte, olhando para <code>github.com/user/ola</code>
+pacote dentro da área de trabalho especificado pelo <code>GOPATH</code>.
+</p>
+
+<p>
+Você também pode omitir o caminho do pacote, se você rodar <code>go install</code>
+no diretório do pacote:
+</p>
+
+<pre>
+$ <b>cd $GOPATH/src/github.com/user/ola</b>
+$ <b>go install</b>
+</pre>
+
+<p>
+Este comando cria o comando <code>ola</code>, produzindo um binário executável. 
+Em seguida, instala esse binário no diretório <code>bin</code> da área de trabalho 
+como <code>ola</code> (ou <code>ola.exe</code> no Windows). 
+No nosso exemplo, que será <code>$GOPATH/bin/ola</code>, que é <code>$HOME/go/bin/ola</code>.
+</p>
+
+<p>
+A ferramenta <code>go</code> só vai imprimir a saída quando ocorre um erro, por isso, 
+se estes comandos não produzem nenhuma saída é que foram executados com sucesso.
+</p>
+
+<p>
+Agora você pode executar o programa  digitando o caminho completo na linha de comando:
+</p>
+
+<pre>
+$ <b>$GOPATH/bin/ola</b>
+Olá, mundo.
+</pre>
+
+<p>
+Ou, como você adicionou <code>$GOPATH/bin</code> ao seu <code>PATH</code>, 
+basta digitar o nome binário:
+</p>
+
+<pre>
+$ <b>ola</b>
+Olá, mundo.
+</pre>
+
+<p>
+Se você estiver usando um sistema de controle de versão, agora seria um bom momento 
+para inicializar um repositório, adicionar os arquivos, e salvar a sua primeira mudança. 
+Mais uma vez, este passo é opcional: você não precisa usar o controle de fonte 
+para escrever código Go.
+</p>
+
+<pre>
+$ <b>cd $GOPATH/src/github.com/user/ola</b>
+$ <b>git init</b>
+Initialized empty Git repository in /home/user/go/src/github.com/user/ola/.git/
+$ <b>git add ola.go</b>
+$ <b>git commit -m "initial commit"</b>
+[master (root-commit) 0b4507d] initial commit
+ 1 file changed, 1 insertion(+)
+  create mode 100644 ola.go
+</pre>
+
+<p>
+Subir o código para um repositório remoto fica como um exercício para o leitor.
+</p>
+
+
+<h3 id="Library">Sua primeira biblioteca</h3>
+
+<p>
+Vamos escrever uma biblioteca e usá-la a partir do programa <code>ola</code>.
+</p>
+
+<p>
+Mais uma vez, o primeiro passo é escolher um caminho de pacote 
+(vamos usar <code>github.com/user/newmath</code>) e criar o diretório do pacote:
+</p>
+
+<pre>
+$ <b>mkdir $GOPATH/src/github.com/user/newmath</b>
+</pre>
+
+<p>
+Em seguida, crie um arquivo chamado <code>sqrt.go</code> nesse diretório com o seguinte conteúdo.
+</p>
+
+<pre>
+// Pacote newmath é um exemplo tricial de pacote.
+package newmath
+
+// Sqrt retorna uma aproximação da raiz quadrada de x.
+func Sqrt(x float64) float64 {
+	z := 1.0
+	for i := 0; i &lt; 1000; i++ {
+		z -= (z*z - x) / (2 * z)
+	}
+	return z
+}
+</pre>
+
+<p>
+Agora, teste se este pacote compila com <code>go build</code>:
+</p>
+
+<pre>
+$ <b>go build github.com/user/newmath</b>
+</pre>
+
+<p>
+Ou, se você se você estiver trabalhando no diretório fonte do pacote, apenas:
+</p>
+
+<pre>
+$ <b>go build</b>
+</pre>
+
+<p>
+Isso não vai produzir um arquivo de saída. Para fazer isso, você deve usar <code>go
+install</code>, que coloca o objeto do pacote dentro do diretório <code>pkg</code> 
+da área de trabalho.
+</p>
+
+<p>
+Após a confirmação de que o pacote <code>newmath</code> compila, 
+modifique seu <code>ola.go</code> original 
+(que está em <code>$GOPATH/src/github.com/user/ola</code>) para usá-lo:
+</p>
+
+<pre>
+package main
+
+import (
+	"fmt"
+
+	<b>"github.com/user/newmath"</b>
+)
+
+func main() {
+	fmt.Printf("Olá, mundo.  <b>Sqrt(2) = %v\n", newmath.Sqrt(2)</b>)
+}
+</pre>
+
+<p>
+Sempre que a ferramenta  <code>go</code> instala um pacote ou binário, ele também 
+instala quaisquer dependências que tenha. Então, quando você instalar o programa <code>ola</code>.
+</p>
+
+<pre>
+$ <b>go install github.com/user/ola</b>
+</pre>
+
+<p>
+O pacote <code>newmath</code> será instalado, automaticamente.
+</p>
+
+<p>
+Executando a nova versão do programa você deve ver alguma saída numérica:
+</p>
+
+<pre>
+$ <b>ola</b>
+Olá, mundo.  Sqrt(2) = 1.414213562373095
+</pre>
+
+<p>
+Após os passos acima, sua área de trabalho deve ficar assim:
+</p>
+
+<pre>
+bin/
+    ola                # comando executável
+pkg/
+    linux_amd64/       # isso dependerá do seu SO e arquitetura
+        github.com/user/
+            newmath.a  # objeto do pacote
+src/
+    github.com/user/
+        ola/
+            ola.go     # código do comando
+        newmath/
+            sqrt.go    # código do pacote
+</pre>
+
+<p>
+Note que <code>go install</code> colocou o objeto <code>newmath.a</code> em um 
+diretório dentro <code>pkg/linux_amd64</code> que espelha o seu diretório de origem. 
+Isso é para que as futuras invocações da ferramenta go possam encontrar o objeto do
+pacote e evitar recompilar o pacote desnecessariamente. A parte <code>linux_amd64</code>
+está lá para ajudar na compilação-cruzada, e vai refletir o sistema 
+operacional e a arquitetura do seu sistema.
+</p>
+
+<p>
+Executáveis ​​de comando Go são estaticamente ligados, os objetos do pacote não precisam 
+estar presentes para executar programas Go.
+</p>
+
+
+<h3 id="PackageNames">Nomes de pacote</h3>
+
+<p>
+A primeira declaração em um arquivo de origem Go deve ser
+</p>
+
+<pre>
+package <i>nome</i>
+</pre>
+
+<p>
+onde <code><i>nome</i></code> é o nome padrão do pacote para as importações. 
+(Todos os arquivos em um pacote devem usar o mesmo <code><i>nome</i></code>.)
+</p>
+
+<p>
+A convenção de Go é que o nome do pacote é o último elemento do caminho de importação: 
+o pacote importado como "<code>crypto/rot13</code>" deve ser nomeado <code>rot13</code>.
+</p>
+
+<p>
+Comandos executáveis ​​devem sempre usar o <code>package main</code>.
+</p>
+
+<p>
+Não há exigência de que os nomes de pacotes sejam únicos em todos 
+os pacotes ligados em um único binário, só que os caminhos de importação 
+(os nomes completos de arquivos) sejam únicos.
+</p>
+
+<p>
+Veja <a href="http://golang.org/doc/effective_go.html#names">Go Efetivo</a> para aprender mais sobre as convenções de nomenclatura de Go.
+</p>
+
+
+<h2 id="Testing">Testando</h2>
+
+<p>
+Go tem uma estrutura de teste leve, composta pelo comando <code>go test</code> e o pacote <code>testing</code>.
+</p>
+
+<p>
+Você escreve um teste criando um arquivo com um nome terminando em <code>_test.go</code> que 
+contém funções nomeadas TestXXX com assinatura <code>func (t *testing.T)</code>. 
+O quadro de teste é executado cada tal função, se a função chama uma função falha, 
+como <code>t.Error</code> ou <code>t.Fail</code>, o teste é considerado falho.
+</p>
+
+<p>
+Adicione um teste para o pacote <code>newmath</code> criando o arquivo <code>$GOPATH/src/github.com/user/newmath/sqrt_test.go</code> 
+contendo o seguinte código Go.
+</p>
+
+<pre>
+package newmath
+
+import "testing"
+
+func TestSqrt(t *testing.T) {
+	const in, out = 4, 2
+	if x := Sqrt(in); x != out {
+		t.Errorf("Sqrt(%v) = %v, want %v", in, x, out)
+	}
+}
+</pre>
+
+<p>
+Then run the test with <code>go test</code>:
+Em seguida, execute o teste com o <code>go test</code>:
+</p>
+
+<pre>
+$ <b>go test github.com/user/newmath</b>
+ok  	github.com/user/newmath 0.165s
+</pre>
+
+<p>
+Como sempre, se você estiver executando a ferramenta <code>go</code> no diretório do pacote, 
+você pode omitir o caminho do pacote:
+</p>
+
+<pre>
+$ <b>go test</b>
+ok  	github.com/user/newmath 0.165s
+</pre>
+
+<p>
+Executar <code><a href="/cmd/go/#hdr-Test_packages">go help test</a></code> e ver a <a href="/pkg/testing/">
+documentação do pacote de testes</a> para mais detalhes
+</p>
+
+
+<h2 id="remote">Pacotes remotos</h2>
+
+<p>
+Um caminho de importação pode descrever como obter o código-fonte do pacote usando um sistema de 
+controle de revisão, como Git ou Mercurial. A ferramenta <code>go</code> usa essa propriedade 
+para buscar automaticamente os pacotes de repositórios remotos. Por exemplo, os exemplos 
+descritos neste documento, também são mantidos em um repositório Mercurial hospedado no 
+Google Code, <code><a href="http://code.google.com/p/go.example">code.google.com/p/go.example</a></code>. 
+Se você incluir o URL do repositório no caminho de importação do pacote, <code>go get</code> vai buscar, 
+construir e instalar automaticamente
+</p>
+
+<pre>
+$ <b>go get code.google.com/p/go.example/hello</b>
+$ <b>$GOPATH/bin/hello</b>
+Hello, world.  Sqrt(2) = 1.414213562373095
+</pre>
+
+<p>
+Se o pacote especificado não está presente em uma área de trabalho, <code>go get</code> irá colocá-lo 
+dentro do primeiro espaço de trabalho especificado pelo <code>GOPATH</code>. 
+(Se o pacote já existir, <code>go get</code> pula a busca remota e se comporta da mesma forma
+que o <code>go install</code>.)
+
+</p>
+
+<p>
+Depois de emitir o comando <code>go get</code> acima, a árvore de diretórios da área 
+de trabalho deve parecer agora como esta:
+</p>
+
+<pre>
+bin/
+    hello                 # comando executável
+pkg/
+    linux_amd64/
+        code.google.com/p/go.example/
+            newmath.a     # objeto do pacote
+        github.com/user/
+            newmath.a     # objeto do pacote
+src/
+    code.google.com/p/go.example/
+        hello/
+            hello.go      # command source
+        newmath/
+            sqrt.go       # código do pacote
+            sqrt_test.go  # código do teste
+    github.com/user/
+        hello/
+            hello.go      # código do comando
+        newmath/
+            sqrt.go       # código do pacote
+            sqrt_test.go  # código do teste
+</pre>
+
+<p>
+O comando <code>ola</code> hospedado no Google Code depende do pacote <code>newmath</code> dentro 
+do mesmo repositório. As importações no arquivo <code>hello.go</code> usam a mesma convenção de 
+caminho de importação, logo o comando <code>go get</code> é capaz de localizar e instalar o pacote 
+dependente também.
+</p>
+
+<pre>
+import "code.google.com/p/go.example/newmath"
+</pre>
+
+<p>
+Esta convenção é a maneira mais fácil de fazer seus pacotes Go disponíveis 
+para outras pessoas usarem. 
+O <a href="http://code.google.com/p/go-wiki/wiki/Projects">Wiki Go</a> 
+e <a href="http://godashboard.appspot.com/">godashboard.appspot.com</a> fornecem listas de projetos Go externos.
+</p>
+
+<p>
+Para mais informações sobre o uso de repositórios remotos com a ferramenta <code>go</code>, 
+veja <code><a href="/cmd/go/#hdr-Remote_import_paths">go help importpath</a></code>.
+</p>
+
+
+<h2 id="more">Outras leituras</h2>
+
+<p>
+Veja <a href="/doc/go_efetivo">Go Efetivo</a> para dicas sobre 
+como escrever código Go claro e idiomático.
+</p>
+
+<p>
+Dê <a href="http://go-tour-br.appspot.com">um passeio por Go</a> para aprender a linguagem
+adequadamente.
+</p>
+
+<p>
+Visite a página de <a href="http://golang.org/doc/#articles">documentação</a> 
+para um conjunto de artigos sobre a linguagem Go e suas bibliotecas e ferramentas.
+</p>
