@@ -30,13 +30,13 @@ func serveError(w http.ResponseWriter, r *http.Request, relpath string, err erro
 	})
 }
 
-// Workaround to Github+GAE =P
+// Workaround for Github+GAE =P
 func fakeZIP() (z *zip.Reader, err error) {
 	var buf bytes.Buffer
 	var wr io.Writer
 	w := zip.NewWriter(&buf)
 
-	filepath.Walk("./pt_BR", func(path string, info os.FileInfo, _ error) error {
+	filepath.Walk(zipGoroot, func(path string, info os.FileInfo, _ error) error {
 		if !info.IsDir() {
 			wr, err = w.Create(path)
 			if err != nil {

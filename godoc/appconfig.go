@@ -8,7 +8,7 @@ const (
 	zipFilename = "godoc.zip"
 
 	// goroot directory in .zip file
-	zipGoroot = "/pt_BR"
+	zipGoroot = "./pt_BR"
 
 	// glob pattern describing search index files
 	// (if empty, the index is built at run-time)
