@@ -19,4 +19,11 @@ $ go_appengine/dev_appserver.py golangbr.org
 $ chromium-browser localhost:8080
 ```
 Para outras versões etc..
-[https://developers.google.com/appengine/downloads?hl=pt-br#Google_App_Engine_SDK_for_Go](https://developers.google.com/appengine/downloads?hl=pt-br#Google_App_Engine_SDK_for_Go)
++ [https://developers.google.com/appengine/downloads?hl=pt-br#Google_App_Engine_SDK_for_Go](https://developers.google.com/appengine/downloads?hl=pt-br#Google_App_Engine_SDK_for_Go)
+
+
+### Contribuindo
+
++ Abra uma issue informando no que deseja colaborar, ou está trabalhando.
++ Inclua seu nome/email no arquivo CONTRIBUIDORES.
++ Dê o pull/request ;-)
