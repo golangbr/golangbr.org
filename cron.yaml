@@ -1,0 +1,4 @@
+cron:
+- description: Script de atualização automática dos posts do blog.golangbr.org
+  url: /script_blog
+  schedule: every 2 hours
