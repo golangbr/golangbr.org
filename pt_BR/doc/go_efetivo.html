@@ -286,3 +286,130 @@ como o fato de que um conjunto de variáveis ​​é protegido por um mutex.
     errorCount  uint32
 )
 </pre>
+
+<h2 id="names">Nomes</h2>
+
+<p>
+Os nomes são tão importantes em Go como em qualquer outra linguagem.
+Eles possuem até mesmo efeito semântico:
+A visibilidade de um nome fora do pacote é determinada pela escrita
+do primeiro caractere em maiúsculo.
+Portanto, vale a pena gastar um pouco de tempo discutindo as convenções 
+de nomenclatura nos programas escritos em Go.
+</p>
+
+
+<h3 id="package-names">Nomes de Pacotes</h3>
+
+<p>
+Quando um pacote é importado, o nome do pacote se torna um acessor 
+para o seu conteúdo. Após
+</p>
+
+<pre>
+import "bytes"
+</pre>
+
+<p>
+o pacote que realizou a importação pode acessar <code>bytes.Buffer</code>.  
+É conveniente que todos que utilizam o pacote possam usar o mesmo nome para 
+se referir ao seu conteúdo, o que implica na necessidade do nome do pacote
+ser bom: curto, conciso, evocativo. Por convenção, os pacotes são nomeados em
+letras minúsculas e palavras únicas; não deve existir necessidade de se 
+utilizar underscores ou 'casoMisto'.
+Já que todos que utilizarão seu pacote terão que digitar o nome dele, erre em 
+favor da brevidade. Não se preocupe com colisões <i>a priori</i>.
+O nome do pacote é apenas o nome padrão para importações; não precisa ser único 
+dentro de todo o código-fonte, e nos raros casos de colisão o pacote que realiza 
+a importação pode escolher um nome diferente para uso local.
+De todo modo, confusões são raras pois o nome do arquivo na importação determina 
+qual pacote será utilizado.
+</p>
+
+<p>
+Outra convenção é que o nome do pacote é o nome base do diretório do seu 
+código-fonte;
+o pacote em <code>src/pkg/encoding/base64</code>
+é importado como <code>"encoding/base64"</code> e o seu nome é <code>base64</code>,
+não é <code>encoding_base64</code> e não é <code>encodingBase64</code>.
+</p>
+
+<p>
+O importador de um pacote usará o nome do pacote para se referir ao seu conteúdo, 
+de modo que nomes exportados pelo pacote se utilizam disso para evitar a duplicação. 
+(Não utilize a notação <code>import .</code>, a qual pode simplificar os testes que 
+precisam executar fora do pacote que estão testando, mas que no geral deve ser evitada.) 
+Por exemplo, o tipo buffered reader do pacote <code>bufio</code> é chamado <code>Reader</code>,
+e não <code>BufReader</code>, pois os usuários podem enxergar ele como <code>bufio.Reader</code>,
+o qual é um nome claro e conciso.
+Além disso, devido ao fato de que entidades importadas são sempre referenciadas pelo nomes do 
+pacote, <code>bufio.Reader</code> não enta em conflito com <code>io.Reader</code>.
+De maneira semelhante, a função para criar novas instancias de <code>ring.Ring</code>&mdash; 
+que é a definição de um <em>constructor</em> em Go&mdash;seria normalmente chamada 
+<code>NewRing</code>, mas uma vez que <code>Ring</code> é o único tipo exportado pelo pacote, 
+e também que o pacote é chamado <code>ring</code>, a função é chamada apenas de <code>New</code>,
+a qual o clientes do pacote enxergam como <code>ring.New</code>.
+Utilize a estrutura do pacote para lhe auxiliar a escolher bons nomes.
+</p>
+
+<p>
+Outro exemplo é o caso da função <code>once.Do</code>;
+<code>once.Do(setup)</code> tem boa legibilidade e não apresenta ganhos ao reescrevermos 
+seu nome para <code>once.DoOrWaitUntilDone(setup)</code>.
+Nomes longos não fazem as coisas serem mais legíveis automaticamente.
+Uma linha de comentário útil é geralmente mais valiosa do que nomes mais compridos.
+</p>
+
+<h3 id="Getters">Getters</h3>
+
+<p>
+Go não disponibiliza suporte automático para métodos getters e setters.
+Não há nada de errado em disponibilizar getters e setters você mesmo,
+e geralmente é apropriado fazê-lo, contudo, não é idiomático e nem necessário 
+colocar <code>Get</code> no nome do método getter.  
+Se você tem um campo chamdo <code>owner</code> (em minúsculo, não exportado), 
+o método getter deve ser chamado <code>Owner</code> (em maísculo, exportado), 
+e não <code>GetOwner</code>.
+O uso de nomes em UpperCase para fins de exportação é a forma utilizada para 
+diferenciar o campo do método.
+Uma função setter, se necessária, provavelmente será chamada <code>SetOwner</code>.
+Ambos os nomes terão boa legibilidade na prática:
+
+</p>
+<pre>
+owner := obj.Owner()
+if owner != user {
+    obj.SetOwner(user)
+}
+</pre>
+
+<h3 id="interface-names">Nomes de Interfaces</h3>
+
+<p>
+Por convenção, interfaces de método único são nomeadas pelo 
+nome do método mais o sufixo -er ou modificação similar para
+construir um nome de agente: <code>Reader</code>,
+<code>Writer</code>, <code>Formatter</code>,
+<code>CloseNotifier</code> etc.
+</p>
+
+<p>
+Há uma série de nomes, e é produtivo mencioná-los, bem como os 
+nomes das funções que estes nomes compreendem.
+<code>Read</code>, <code>Write</code>, <code>Close</code>, <code>Flush</code>,
+<code>String</code> e assim por diante, possuem assinaturas e significados canônicos.
+Para evitar confusões, não utilize estes nomes para nomear seus métodos a não ser que 
+possuam a mesma assinatura e significado.
+Em contra partida, se o seu tipo implementa um método com o mesmo significado de um 
+método de um tipo largamente conhecido, dê a ele o mesmo nome e assinatura;
+chame a sua função de conversão para string de <code>String</code> e não de <code>ToString</code>.
+</p>
+
+<h3 id="mixed-caps">MixedCaps</h3>
+
+<p>
+E por último, a convenção em Go é utilizar <code>MixedCaps</code>
+ou <code>mixedCaps</code> ao invés de underscores para escrever nomes 
+com mais de uma palavra.
+</p>
+
