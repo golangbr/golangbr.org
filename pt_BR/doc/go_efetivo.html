@@ -413,3 +413,66 @@ ou <code>mixedCaps</code> ao invés de underscores para escrever nomes
 com mais de uma palavra.
 </p>
 
+<h2 id="semicolons">Pontos-e-vírgulas</h2>
+
+<p>
+Assim como em C, a sintaxe do Go utiliza pontos-e-virgulas para finalizar instruções,
+mas diferente de C, estes pontos-e-virgulas não aparecem no código-fonte.
+Ao invés disso, o analisador léxico utiliza uma regra simples para inserir os 
+pontos-e-virgulas automaticamente enquanto realiza o processamento, assim o
+texto de entrada fica praticamente livre deles.
+</p>
+
+<p>
+A regra é a seguinte. Se o último token antes de uma nova linha for um
+identificador (o que inclui palavras como <code>int</code> e <code>float64</code>),
+um literal básico tal como uma constante string ou númerica, ou um dos tokens
+</p>
+<pre>
+break continue fallthrough return ++ -- ) }
+</pre>
+<p>
+o processador léxico sempre irá inserir um ponto-e-virgula após o token.
+Resumindo: &ldquo;se a nova linha inicia depois de um token que pode terminar 
+uma instrução, insira um ponto-e-virgula&rdquo;.
+</p>
+
+<p>
+Um ponto-e-virgula também pode ser omitido se aparecer imediatamente antes de uma chave de fechamento,
+deste modo uma instrução como a abaixo
+</p>
+<pre>
+    go func() { for { dst &lt;- &lt;-src } }()
+</pre>
+<p>
+não precisa de ponto-e-virgula.
+Programas Go idiomáticos possuem pontos-e-virgulas apenas em locais tais como
+laços <code>for</code>, para separar os blocos de inicialização, condição, e 
+continuação. Os pontos-e-virgulas também são necessários para separar múltiplas 
+instruções em uma única linha. Você deve escrever seu código desta maneira.
+</p>
+
+<p>
+Uma consequência da regra de inserção de ponto-e-virgula é que você não pode
+colocar uma chave de abertura de estrutura de controle
+(<code>if</code>, <code>for</code>, <code>switch</code>,
+ou <code>select</code>) iniciando a linha seguinte.  Se você o fizer, um ponto-e-virgula 
+será inserido antes da chave, o que pode resultar em comportamento indesejado.
+Escreva as chaves assim
+</p>
+
+<pre>
+if i &lt; f() {
+    g()
+}
+</pre>
+<p>
+e não assim
+</p>
+<pre>
+if i &lt; f()  // errado!
+{           // errado!
+    g()
+}
+</pre>
+
