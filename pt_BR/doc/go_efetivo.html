@@ -476,3 +476,144 @@ if i &lt; f()  // errado!
 }
 </pre>
 
+<h2 id="control-structures">Estruturas de controle</h2>
+
+<p>
+As estruturas de controle do Go tem relação com as estruturas do C mas diferem 
+em pontos importantes.
+Não existem laços <code>do</code> ou <code>while</code>, apenas um 
+laço genérico <code>for</code>;
+<code>switch</code> é mais flexível;
+<code>if</code> e <code>switch</code> aceitam um bloco de inicialização 
+opcional, assim como o laço <code>for</code>;
+Os comandos <code>break</code> e <code>continue</code> admitem um label opcional
+para identificar o que deve ser interrompido ou continuado;
+e existem novas estruturas de controle, incluindo um seletor de tipo e 
+um multiplexador de comunicação multiponto, <code>select</code>.
+A sintaxe também é ligeiramente diferente:
+não existem parenteses e os blocos de instruções devem estar sempre 
+delimitados por chaves.
+</p>
+
+<h3 id="if">If</h3>
+
+<p>
+Em Go um <code>if</code> simples tem a seguinte forma:
+</p>
+<pre>
+if x &gt; 0 {
+    return y
+}
+</pre>
+
+<p>
+Chaves obrigatórias encorajam a escrita de instruções <code>if</code> 
+simples em múltiplas linhas.
+
+É uma boa prática em todo os sentidos, especialmente quando o bloco
+contém instruções de controle como <code>return</code> ou <code>break</code>.
+</p>
+
+<p>
+Visto que <code>if</code> e <code>switch</code> aceitam instruções de inicialização, 
+é comum utilizar estas intruções para setar variáveis locais.
+</p>
+
+<pre>
+if err := file.Chmod(0664); err != nil {
+    log.Print(err)
+    return err
+}
+</pre>
+
+<p id="else">
+Nas bibliotecas Go, você vai descobrir que quando um bloco <code>if</code> 
+não alcança a próxima instrução—ou seja, o bloco termina em <code>break</code>, <code>continue</code>,
+<code>goto</code>, ou <code>return</code>—o <code>else</code> desnecessário é omitido.
+</p>
+
+<pre>
+f, err := os.Open(name)
+if err != nil {
+    return err
+}
+codeUsing(f)
+</pre>
+
+<p>
+Este é um exemplo de situação corriqueira na qual o 
+código deve ter proteção contra uma série de erros. 
+O código executa através da página conforme o fluxo de condições vai sendo bem sucedido, 
+eliminando as situações de erro conforme elas vão surgindo. 
+Uma vez que as situações de erro tendem a terminar em instruções <code>return</code>,
+o código resultante não requer instrução <code>else</code>.
+</p>
+
+<pre>
+f, err := os.Open(name)
+if err != nil {
+    return err
+}
+d, err := f.Stat()
+if err != nil {
+    f.Close()
+    return err
+}
+codeUsing(f, d)
+</pre>
+
+
+<h3 id="redeclaration">Redeclaração e reatribuição</h3>
+
+<p>
+Um aparte: O último exemplo da seção anterior demonstra como a forma curta de declaração <code>:=</code> funciona. 
+A declaração que chama <code>os.Open</code> é:
+</p>
+
+<pre>
+f, err := os.Open(name)
+</pre>
+
+<p>
+Esta instrução declara duas variáveis, <code>f</code> e <code>err</code>.
+Algumas linhas depois, a chamada para <code>f.Stat</code> é:
+</p>
+
+<pre>
+d, err := f.Stat()
+</pre>
+
+<p>
+a qual parece estar declarando as variáveis <code>d</code> e <code>err</code>.
+Note, entretanto, que a variável <code>err</code> aparece em ambas as intruções.
+Esta duplicação é legal: <code>err</code> é declarada pela primeira instrução,
+e então é <em>reatribuida</em> na segunda.
+Isto significa que a chamada para <code>f.Stat</code> utiliza a variável já existente <code>err</code>, 
+declarada logo acima, e apenas atribuiu a ela um novo valor.
+</p>
+
+<p>
+Em uma declaração <code>:=</code>, uma variável <code>v</code> pode aparecer 
+mesmo se já tiver sido declarada, desde que:
+</p>
+
+<ul>
+<li>esta declaração esteja no mesmo escopo que a declaração já existente de <code>v</code>
+(se a variável <code>v</code> já estiver declarada em um escopo externo, está declaração irá criar uma nova variável §),</li>
+<li>o valor correspondente na inicialização seja atribuível à variável <code>v</code>, e</li>
+<li>exista pelo menos uma outra variável na declaração que esteja sendo declarada como nova.</li>
+</ul>
+
+<p>
+Esta propriedade incomum é pragmatismo puro, tornando
+fácil a utilização de um único valor para a variável <code>err</code>,
+por exemplo, dentro de uma grande sequência de <code>if-else</code>.
+Você verá que isto é usado em várias ocasiões. 
+</p>
+
+<p>
+§ Vale a pena notar que em Go o escopo de parâmetros e valores de retorno de funcões
+é o mesmo do corpo da função, mesmo que lexicamente eles pareçam estar de fora 
+das chaves que limitam o corpo da função. 
+</p>
+
