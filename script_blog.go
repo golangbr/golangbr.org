@@ -131,17 +131,21 @@ func lerConfiguracao(w http.ResponseWriter, r *http.Request) Configuracao {
 	commits, _, _ := client.Repositories.ListCommits(configuracao.Proprietario, configuracao.Repositorio, opt)
 
 	ultimaLeitura := ""
-	executa := true
-	for i := 0; executa; i++ {
-		if (*commits[i].Commit.Message)[0:18] == "Adicionando post: " {
-			n := (commits[i].Commit.Author.Date).Format(time.RFC3339)
-			ultimaLeitura = n[0:4] + n[5:7] + n[8:10] + n[11:13] + n[14:16]
-			executa = false
+	
+	if len(commits) > 0 {
+		for i := 0; i < len(commits); i++ {
+			if len(*commits[i].Commit.Message) > 18 {
+				if (*commits[i].Commit.Message)[0:18] == "Adicionando post: " {
+					n := (commits[i].Commit.Author.Date).Format(time.RFC3339)
+					ultimaLeitura = n[0:4] + n[5:7] + n[8:10] + n[11:13] + n[14:16]
+					break
+				}
+			}
 		}
-		executa = (i < len(commits)) && executa
 	}
 
 	configuracao.UltimaLeitura = ultimaLeitura
+	fmt.Fprint(w, ultimaLeitura+"\n")
 
 	return configuracao
 }
