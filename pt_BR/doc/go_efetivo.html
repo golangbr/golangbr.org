@@ -286,3 +286,334 @@ como o fato de que um conjunto de variáveis ​​é protegido por um mutex.
     errorCount  uint32
 )
 </pre>
+
+<h2 id="names">Nomes</h2>
+
+<p>
+Os nomes são tão importantes em Go como em qualquer outra linguagem.
+Eles possuem até mesmo efeito semântico:
+A visibilidade de um nome fora do pacote é determinada pela escrita
+do primeiro caractere em maiúsculo.
+Portanto, vale a pena gastar um pouco de tempo discutindo as convenções 
+de nomenclatura nos programas escritos em Go.
+</p>
+
+
+<h3 id="package-names">Nomes de Pacotes</h3>
+
+<p>
+Quando um pacote é importado, o nome do pacote se torna um acessor 
+para o seu conteúdo. Após
+</p>
+
+<pre>
+import "bytes"
+</pre>
+
+<p>
+o pacote que realizou a importação pode acessar <code>bytes.Buffer</code>.  
+É conveniente que todos que utilizam o pacote possam usar o mesmo nome para 
+se referir ao seu conteúdo, o que implica na necessidade do nome do pacote
+ser bom: curto, conciso, evocativo. Por convenção, os pacotes são nomeados em
+letras minúsculas e palavras únicas; não deve existir necessidade de se 
+utilizar underscores ou 'casoMisto'.
+Já que todos que utilizarão seu pacote terão que digitar o nome dele, erre em 
+favor da brevidade. Não se preocupe com colisões <i>a priori</i>.
+O nome do pacote é apenas o nome padrão para importações; não precisa ser único 
+dentro de todo o código-fonte, e nos raros casos de colisão o pacote que realiza 
+a importação pode escolher um nome diferente para uso local.
+De todo modo, confusões são raras pois o nome do arquivo na importação determina 
+qual pacote será utilizado.
+</p>
+
+<p>
+Outra convenção é que o nome do pacote é o nome base do diretório do seu 
+código-fonte;
+o pacote em <code>src/pkg/encoding/base64</code>
+é importado como <code>"encoding/base64"</code> e o seu nome é <code>base64</code>,
+não é <code>encoding_base64</code> e não é <code>encodingBase64</code>.
+</p>
+
+<p>
+O importador de um pacote usará o nome do pacote para se referir ao seu conteúdo, 
+de modo que nomes exportados pelo pacote se utilizam disso para evitar a duplicação. 
+(Não utilize a notação <code>import .</code>, a qual pode simplificar os testes que 
+precisam executar fora do pacote que estão testando, mas que no geral deve ser evitada.) 
+Por exemplo, o tipo buffered reader do pacote <code>bufio</code> é chamado <code>Reader</code>,
+e não <code>BufReader</code>, pois os usuários podem enxergar ele como <code>bufio.Reader</code>,
+o qual é um nome claro e conciso.
+Além disso, devido ao fato de que entidades importadas são sempre referenciadas pelo nomes do 
+pacote, <code>bufio.Reader</code> não enta em conflito com <code>io.Reader</code>.
+De maneira semelhante, a função para criar novas instancias de <code>ring.Ring</code>&mdash; 
+que é a definição de um <em>constructor</em> em Go&mdash;seria normalmente chamada 
+<code>NewRing</code>, mas uma vez que <code>Ring</code> é o único tipo exportado pelo pacote, 
+e também que o pacote é chamado <code>ring</code>, a função é chamada apenas de <code>New</code>,
+a qual o clientes do pacote enxergam como <code>ring.New</code>.
+Utilize a estrutura do pacote para lhe auxiliar a escolher bons nomes.
+</p>
+
+<p>
+Outro exemplo é o caso da função <code>once.Do</code>;
+<code>once.Do(setup)</code> tem boa legibilidade e não apresenta ganhos ao reescrevermos 
+seu nome para <code>once.DoOrWaitUntilDone(setup)</code>.
+Nomes longos não fazem as coisas serem mais legíveis automaticamente.
+Uma linha de comentário útil é geralmente mais valiosa do que nomes mais compridos.
+</p>
+
+<h3 id="Getters">Getters</h3>
+
+<p>
+Go não disponibiliza suporte automático para métodos getters e setters.
+Não há nada de errado em disponibilizar getters e setters você mesmo,
+e geralmente é apropriado fazê-lo, contudo, não é idiomático e nem necessário 
+colocar <code>Get</code> no nome do método getter.  
+Se você tem um campo chamdo <code>owner</code> (em minúsculo, não exportado), 
+o método getter deve ser chamado <code>Owner</code> (em maísculo, exportado), 
+e não <code>GetOwner</code>.
+O uso de nomes em UpperCase para fins de exportação é a forma utilizada para 
+diferenciar o campo do método.
+Uma função setter, se necessária, provavelmente será chamada <code>SetOwner</code>.
+Ambos os nomes terão boa legibilidade na prática:
+
+</p>
+<pre>
+owner := obj.Owner()
+if owner != user {
+    obj.SetOwner(user)
+}
+</pre>
+
+<h3 id="interface-names">Nomes de Interfaces</h3>
+
+<p>
+Por convenção, interfaces de método único são nomeadas pelo 
+nome do método mais o sufixo -er ou modificação similar para
+construir um nome de agente: <code>Reader</code>,
+<code>Writer</code>, <code>Formatter</code>,
+<code>CloseNotifier</code> etc.
+</p>
+
+<p>
+Há uma série de nomes, e é produtivo mencioná-los, bem como os 
+nomes das funções que estes nomes compreendem.
+<code>Read</code>, <code>Write</code>, <code>Close</code>, <code>Flush</code>,
+<code>String</code> e assim por diante, possuem assinaturas e significados canônicos.
+Para evitar confusões, não utilize estes nomes para nomear seus métodos a não ser que 
+possuam a mesma assinatura e significado.
+Em contra partida, se o seu tipo implementa um método com o mesmo significado de um 
+método de um tipo largamente conhecido, dê a ele o mesmo nome e assinatura;
+chame a sua função de conversão para string de <code>String</code> e não de <code>ToString</code>.
+</p>
+
+<h3 id="mixed-caps">MixedCaps</h3>
+
+<p>
+E por último, a convenção em Go é utilizar <code>MixedCaps</code>
+ou <code>mixedCaps</code> ao invés de underscores para escrever nomes 
+com mais de uma palavra.
+</p>
+
+<h2 id="semicolons">Pontos-e-vírgulas</h2>
+
+<p>
+Assim como em C, a sintaxe do Go utiliza pontos-e-virgulas para finalizar instruções,
+mas diferente de C, estes pontos-e-virgulas não aparecem no código-fonte.
+Ao invés disso, o analisador léxico utiliza uma regra simples para inserir os 
+pontos-e-virgulas automaticamente enquanto realiza o processamento, assim o
+texto de entrada fica praticamente livre deles.
+</p>
+
+<p>
+A regra é a seguinte. Se o último token antes de uma nova linha for um
+identificador (o que inclui palavras como <code>int</code> e <code>float64</code>),
+um literal básico tal como uma constante string ou númerica, ou um dos tokens
+</p>
+<pre>
+break continue fallthrough return ++ -- ) }
+</pre>
+<p>
+o processador léxico sempre irá inserir um ponto-e-virgula após o token.
+Resumindo: &ldquo;se a nova linha inicia depois de um token que pode terminar 
+uma instrução, insira um ponto-e-virgula&rdquo;.
+</p>
+
+<p>
+Um ponto-e-virgula também pode ser omitido se aparecer imediatamente antes de uma chave de fechamento,
+deste modo uma instrução como a abaixo
+</p>
+<pre>
+    go func() { for { dst &lt;- &lt;-src } }()
+</pre>
+<p>
+não precisa de ponto-e-virgula.
+Programas Go idiomáticos possuem pontos-e-virgulas apenas em locais tais como
+laços <code>for</code>, para separar os blocos de inicialização, condição, e 
+continuação. Os pontos-e-virgulas também são necessários para separar múltiplas 
+instruções em uma única linha. Você deve escrever seu código desta maneira.
+</p>
+
+<p>
+Uma consequência da regra de inserção de ponto-e-virgula é que você não pode
+colocar uma chave de abertura de estrutura de controle
+(<code>if</code>, <code>for</code>, <code>switch</code>,
+ou <code>select</code>) iniciando a linha seguinte.  Se você o fizer, um ponto-e-virgula 
+será inserido antes da chave, o que pode resultar em comportamento indesejado.
+Escreva as chaves assim
+</p>
+
+<pre>
+if i &lt; f() {
+    g()
+}
+</pre>
+<p>
+e não assim
+</p>
+<pre>
+if i &lt; f()  // errado!
+{           // errado!
+    g()
+}
+</pre>
+
+<h2 id="control-structures">Estruturas de controle</h2>
+
+<p>
+As estruturas de controle do Go tem relação com as estruturas do C mas diferem 
+em pontos importantes.
+Não existem laços <code>do</code> ou <code>while</code>, apenas um 
+laço genérico <code>for</code>;
+<code>switch</code> é mais flexível;
+<code>if</code> e <code>switch</code> aceitam um bloco de inicialização 
+opcional, assim como o laço <code>for</code>;
+Os comandos <code>break</code> e <code>continue</code> admitem um label opcional
+para identificar o que deve ser interrompido ou continuado;
+e existem novas estruturas de controle, incluindo um seletor de tipo e 
+um multiplexador de comunicação multiponto, <code>select</code>.
+A sintaxe também é ligeiramente diferente:
+não existem parenteses e os blocos de instruções devem estar sempre 
+delimitados por chaves.
+</p>
+
+<h3 id="if">If</h3>
+
+<p>
+Em Go um <code>if</code> simples tem a seguinte forma:
+</p>
+<pre>
+if x &gt; 0 {
+    return y
+}
+</pre>
+
+<p>
+Chaves obrigatórias encorajam a escrita de instruções <code>if</code> 
+simples em múltiplas linhas.
+
+É uma boa prática em todo os sentidos, especialmente quando o bloco
+contém instruções de controle como <code>return</code> ou <code>break</code>.
+</p>
+
+<p>
+Visto que <code>if</code> e <code>switch</code> aceitam instruções de inicialização, 
+é comum utilizar estas intruções para setar variáveis locais.
+</p>
+
+<pre>
+if err := file.Chmod(0664); err != nil {
+    log.Print(err)
+    return err
+}
+</pre>
+
+<p id="else">
+Nas bibliotecas Go, você vai descobrir que quando um bloco <code>if</code> 
+não alcança a próxima instrução—ou seja, o bloco termina em <code>break</code>, <code>continue</code>,
+<code>goto</code>, ou <code>return</code>—o <code>else</code> desnecessário é omitido.
+</p>
+
+<pre>
+f, err := os.Open(name)
+if err != nil {
+    return err
+}
+codeUsing(f)
+</pre>
+
+<p>
+Este é um exemplo de situação corriqueira na qual o 
+código deve ter proteção contra uma série de erros. 
+O código executa através da página conforme o fluxo de condições vai sendo bem sucedido, 
+eliminando as situações de erro conforme elas vão surgindo. 
+Uma vez que as situações de erro tendem a terminar em instruções <code>return</code>,
+o código resultante não requer instrução <code>else</code>.
+</p>
+
+<pre>
+f, err := os.Open(name)
+if err != nil {
+    return err
+}
+d, err := f.Stat()
+if err != nil {
+    f.Close()
+    return err
+}
+codeUsing(f, d)
+</pre>
+
+
+<h3 id="redeclaration">Redeclaração e reatribuição</h3>
+
+<p>
+Um aparte: O último exemplo da seção anterior demonstra como a forma curta de declaração <code>:=</code> funciona. 
+A declaração que chama <code>os.Open</code> é:
+</p>
+
+<pre>
+f, err := os.Open(name)
+</pre>
+
+<p>
+Esta instrução declara duas variáveis, <code>f</code> e <code>err</code>.
+Algumas linhas depois, a chamada para <code>f.Stat</code> é:
+</p>
+
+<pre>
+d, err := f.Stat()
+</pre>
+
+<p>
+a qual parece estar declarando as variáveis <code>d</code> e <code>err</code>.
+Note, entretanto, que a variável <code>err</code> aparece em ambas as intruções.
+Esta duplicação é legal: <code>err</code> é declarada pela primeira instrução,
+e então é <em>reatribuida</em> na segunda.
+Isto significa que a chamada para <code>f.Stat</code> utiliza a variável já existente <code>err</code>, 
+declarada logo acima, e apenas atribuiu a ela um novo valor.
+</p>
+
+<p>
+Em uma declaração <code>:=</code>, uma variável <code>v</code> pode aparecer 
+mesmo se já tiver sido declarada, desde que:
+</p>
+
+<ul>
+<li>esta declaração esteja no mesmo escopo que a declaração já existente de <code>v</code>
+(se a variável <code>v</code> já estiver declarada em um escopo externo, está declaração irá criar uma nova variável §),</li>
+<li>o valor correspondente na inicialização seja atribuível à variável <code>v</code>, e</li>
+<li>exista pelo menos uma outra variável na declaração que esteja sendo declarada como nova.</li>
+</ul>
+
+<p>
+Esta propriedade incomum é pragmatismo puro, tornando
+fácil a utilização de um único valor para a variável <code>err</code>,
+por exemplo, dentro de uma grande sequência de <code>if-else</code>.
+Você verá que isto é usado em várias ocasiões. 
+</p>
+
+<p>
+§ Vale a pena notar que em Go o escopo de parâmetros e valores de retorno de funcões
+é o mesmo do corpo da função, mesmo que lexicamente eles pareçam estar de fora 
+das chaves que limitam o corpo da função. 
+</p>
+
