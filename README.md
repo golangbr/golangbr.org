@@ -13,7 +13,7 @@ Estrutura do Repositório:
 ### Subindo localmente
 
 ```
-$ wget http://googleappengine.googlecode.com/files/go_appengine_sdk_linux_amd64-1.9.1.zip ; unzip go_appengine_sdk_linux_amd64-1.9.1.zip
+$ wget https://storage.googleapis.com/appengine-sdks/featured/go_appengine_sdk_linux_amd64-1.9.20.zip ; unzip go_appengine_sdk_linux_amd64-1.9.20.zip
 $ git clone https://github.com/golangbr/golangbr.org.git
 $ go_appengine/dev_appserver.py golangbr.org
 $ chromium-browser localhost:8080
