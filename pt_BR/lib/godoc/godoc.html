@@ -10,6 +10,7 @@
 {{end}}
 <link type="text/css" rel="stylesheet" href="/doc/style.css">
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+<script type="text/javascript" src="http://yui.yahooapis.com/3.18.1/build/yui/yui-min.js"></script>
 {{if .Playground}}
 <script type="text/javascript" src="/lib/godoc/playground.js"></script>
 {{end}}
@@ -23,9 +24,9 @@
 <a href="/doc/">Documentação</a>
 <a href="/projeto/">O Projeto</a>
 <a href="/ajuda/">Ajuda</a>
-<a href="http://blog.golangbr.org">Blog</a>
+<a href="http://blog.golang.org">Blog</a>
 {{if .Playground}}
-<a id="playgroundButton" href="http://play.golang.org/" title="Mostrar Go Playground">Play</a>
+<a id="playgroundButton" href="https://play.golang.org/" title="Mostrar Go Playground">Play</a>
 {{end}}
 </div>
 <div id="heading"><a href="/">A linguagem de programação Go</a></div>
@@ -45,7 +46,7 @@ func main() {
 	<div class="buttons">
 		<a class="run" title="Rode este código [shift-enter]">Execute</a>
 		<a class="fmt" title="Formate este código">Formate</a>
-		<a class="share" title="Compartilhe este código"">Compartilhe</a>
+		<a class="share" title="Compartilhe este código">Compartilhe</a>
 	</div>
 </div>
 {{end}}

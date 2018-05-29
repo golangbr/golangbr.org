@@ -9,10 +9,10 @@ package parser
 import (
 	"bytes"
 	"errors"
-	"newgo/ast"
-	"newgo/token"
 	"io"
 	"io/ioutil"
+	"newgo/ast"
+	"newgo/token"
 	"os"
 	"path/filepath"
 	"strings"

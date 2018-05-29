@@ -6,8 +6,8 @@ package scanner
 
 import (
 	"fmt"
-	"newgo/token"
 	"io"
+	"newgo/token"
 	"sort"
 )
 

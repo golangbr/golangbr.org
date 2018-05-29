@@ -8,11 +8,11 @@ package format
 import (
 	"bytes"
 	"fmt"
+	"io"
 	"newgo/ast"
 	"newgo/parser"
 	"newgo/printer"
 	"newgo/token"
-	"io"
 	"strings"
 )
 

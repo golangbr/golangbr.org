@@ -6,9 +6,9 @@ package format
 
 import (
 	"bytes"
+	"io/ioutil"
 	"newgo/parser"
 	"newgo/token"
-	"io/ioutil"
 	"strings"
 	"testing"
 )

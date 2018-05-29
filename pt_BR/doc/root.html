@@ -26,7 +26,7 @@ Olá, 世界
 <div class="buttons">
 <a class="run" href="#" title="Executar este código [shift-enter]">Execute</a>
 <a class="share" href="#" title="Compartilhar este código">Compartilhe</a>
-<a class="tour" href="http://go-tour-br.appspot.com/" title="Aprenda Go pelo seu navegador">Passeie</a>
+<a class="tour" href="http://go-tour-br.appspot.com/" title="Aprenda Go pelo seu navegador">Tour</a>
 </div>
 <div class="toys">
 <select>
@@ -68,7 +68,7 @@ Linux, Mac OS X, Windows, e mais.
 
 <div id="feed">
 <div class="rootHeading">Lista de Discussão: Golang Brasil</div>
-<div class="golangbr"></div>
+<div id="golangbr"></div>
 </div>
 
 </div>
@@ -77,7 +77,7 @@ Linux, Mac OS X, Windows, e mais.
 
 <div id="blog">
 <div class="rootHeading">Artigos em destaque</div>
-<div class="read"><a href="http://blog.golangbr.org/">Leia mais</a></div>
+<div class="read"><a href="http://blog.golang.org/">Leia mais</a></div>
 </div>
 
 
@@ -123,7 +123,7 @@ window.initFuncs.push(function() {
 			"outputEl":      "#learn .output",
 			"runEl":         "#learn .run",
 			"shareEl":       "#learn .share",
-			"shareRedirect": "http://play.golang.org/p/",
+			"shareRedirect": "https://play.golang.org/p/",
 			"toysEl":        "#learn .toys select"
 		});
 	} else {
@@ -146,19 +146,19 @@ window.initFuncs.push(function() {
 	$('#video iframe').attr('height', v.h).attr('src', v.s);
 });
 </script>
-
 <script>
-        var golangbr="";
-	$.ajax({
-  		url      : document.location.protocol + '//ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=10&callback=?&q=' + encodeURIComponent('https://groups.google.com/forum/feed/golang-brasil/topics/rss.xml'),
-  		dataType : 'json',
-  		success  : function (data) {
-    		if (data.responseData.feed && data.responseData.feed.entries) {
-      		$.each(data.responseData.feed.entries, function (i, e) {
-			golangbr = golangbr + "<a href='"+e.link+"' target = '_blank'>"+ e.title + "</a><br>";
-			});
-    			}
-   			$("div.golangbr").html(golangbr);
-  		}
-	});
+YUI().use('datatype-date','yql', function(Y){
+    var query = 'select * from rss(0,15) where url = "https://groups.google.com/forum/feed/golang-brasil/topics/rss.xml"'
+    var q = Y.YQL(query, function(r){
+        //r now contains the result of the YQL Query as a JSON
+        var feedmarkup = ''
+        var feed = r.query.results.item // get feed as array of entries
+        for (var i=0; i<feed.length; i++){
+	    feedmarkup += '<a href="' + feed[i].link + '" target="_blank">'
+	    var date1 = Y.Date.parse(feed[i].pubDate, "%F")
+            feedmarkup += Y.DataType.Date.format(date1, { format: "%m/%d/%Y" })+ ' - ' + feed[i].title + '</a><br />'
+        }
+        document.getElementById('golangbr').innerHTML = feedmarkup
+    })
+})
 </script>

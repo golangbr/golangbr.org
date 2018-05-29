@@ -9,11 +9,11 @@ package printer
 
 import (
 	"bytes"
-	"newgo/ast"
-	"newgo/parser"
 	"io"
 	"io/ioutil"
 	"log"
+	"newgo/ast"
+	"newgo/parser"
 	"testing"
 )
 

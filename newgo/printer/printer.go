@@ -7,9 +7,9 @@ package printer
 
 import (
 	"fmt"
+	"io"
 	"newgo/ast"
 	"newgo/token"
-	"io"
 	"os"
 	"strconv"
 	"strings"

@@ -5,8 +5,8 @@
 package scanner
 
 import (
-	"newgo/token"
 	"io/ioutil"
+	"newgo/token"
 	"os"
 	"path/filepath"
 	"runtime"

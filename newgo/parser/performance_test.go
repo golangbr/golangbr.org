@@ -5,8 +5,8 @@
 package parser
 
 import (
-	"newgo/token"
 	"io/ioutil"
+	"newgo/token"
 	"testing"
 )
 

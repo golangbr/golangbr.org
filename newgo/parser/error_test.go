@@ -23,9 +23,9 @@
 package parser
 
 import (
+	"io/ioutil"
 	"newgo/scanner"
 	"newgo/token"
-	"io/ioutil"
 	"path/filepath"
 	"regexp"
 	"strings"

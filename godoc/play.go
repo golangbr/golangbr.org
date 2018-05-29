@@ -14,7 +14,7 @@ import (
 )
 
 // The server that will service compile and share requests.
-const playgroundBaseURL = "http://play.golang.org"
+const playgroundBaseURL = "https://play.golang.org"
 
 func registerPlaygroundHandlers(mux *http.ServeMux) {
 	if *showPlayground {
