@@ -1,0 +1,16 @@
+sudo: required
+services:
+- docker
+language: go
+go:
+- '1.10'
+deploy:
+  provider: gae
+  keyfile: golangbr-9e68122e9dc4.json
+  project: golangbr
+  skip_cleanup: true
+  verbosity: debug
+  on: master
+before_install:
+- openssl aes-256-cbc -K $encrypted_dad1ab9556c1_key -iv $encrypted_dad1ab9556c1_iv
+  -in golangbr-9e68122e9dc4.json.enc -out golangbr-9e68122e9dc4.json -d
