@@ -8,9 +8,9 @@
 package main
 
 import (
-	"newgo/ast"
-	"newgo/parser"
-	"newgo/token"
+	"go/ast"
+	"go/parser"
+	"go/token"
 	pathpkg "path"
 )
 

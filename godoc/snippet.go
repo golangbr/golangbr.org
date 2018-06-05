@@ -12,8 +12,8 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"newgo/ast"
-	"newgo/token"
+	"go/ast"
+	"go/token"
 )
 
 type Snippet struct {

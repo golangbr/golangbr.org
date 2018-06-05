@@ -13,8 +13,8 @@ package main
 import (
 	"fmt"
 	"io"
-	"newgo/scanner"
-	"newgo/token"
+	"go/scanner"
+	"go/token"
 	"regexp"
 	"strconv"
 	"text/template"

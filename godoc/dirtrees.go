@@ -9,9 +9,9 @@ package main
 import (
 	"bytes"
 	"log"
-	"newgo/doc"
-	"newgo/parser"
-	"newgo/token"
+	"go/doc"
+	"go/parser"
+	"go/token"
 	"os"
 	pathpkg "path"
 	"strings"

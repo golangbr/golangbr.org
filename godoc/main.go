@@ -39,9 +39,9 @@ import (
 	"net/http"
 	_ "net/http/pprof" // to serve /debug/pprof/*
 	"net/url"
-	"newgo/ast"
-	"newgo/build"
-	"newgo/printer"
+	"go/ast"
+	"go/build"
+	"go/printer"
 	"os"
 	pathpkg "path"
 	"path/filepath"

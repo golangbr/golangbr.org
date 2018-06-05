@@ -13,8 +13,8 @@ package main
 import (
 	"fmt"
 	"io"
-	"newgo/ast"
-	"newgo/token"
+	"go/ast"
+	"go/token"
 	"strconv"
 )
 
