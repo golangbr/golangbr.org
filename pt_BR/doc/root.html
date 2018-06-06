@@ -156,7 +156,7 @@ YUI().use('datatype-date','yql', function(Y){
         for (var i=0; i<feed.length; i++){
 	    feedmarkup += '<a href="' + feed[i].link + '" target="_blank">'
 	    var date1 = Y.Date.parse(feed[i].pubDate, "%F")
-            feedmarkup += Y.DataType.Date.format(date1, { format: "%m/%d/%Y" })+ ' - ' + feed[i].title + '</a><br />'
+            feedmarkup += Y.DataType.Date.format(date1, { format: "%d/%m/%Y" })+ ' - ' + feed[i].title + '</a><br />'
         }
         document.getElementById('golangbr').innerHTML = feedmarkup
     })
