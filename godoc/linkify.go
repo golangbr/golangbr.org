@@ -12,9 +12,9 @@ package main
 
 import (
 	"fmt"
-	"io"
 	"go/ast"
 	"go/token"
+	"io"
 	"strconv"
 )
 

@@ -12,9 +12,9 @@ package main
 
 import (
 	"fmt"
-	"io"
 	"go/scanner"
 	"go/token"
+	"io"
 	"regexp"
 	"strconv"
 	"text/template"

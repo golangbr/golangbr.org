@@ -8,10 +8,10 @@ package main
 
 import (
 	"bytes"
-	"log"
 	"go/doc"
 	"go/parser"
 	"go/token"
+	"log"
 	"os"
 	pathpkg "path"
 	"strings"

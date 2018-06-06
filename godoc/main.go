@@ -28,20 +28,20 @@
 package main
 
 import (
-	"archive/zip"
+	//"archive/zip"
 	"bytes"
 	"errors"
 	_ "expvar" // to serve /debug/vars
 	"flag"
 	"fmt"
+	"go/ast"
+	"go/build"
+	"go/printer"
 	"io"
 	"log"
 	"net/http"
 	_ "net/http/pprof" // to serve /debug/pprof/*
 	"net/url"
-	"go/ast"
-	"go/build"
-	"go/printer"
 	"os"
 	pathpkg "path"
 	"path/filepath"
@@ -176,7 +176,7 @@ func main() {
 		if *templateDir != "" {
 			fs.Bind("/lib/godoc", OS(*templateDir), "/", bindBefore)
 		}
-	} else {
+	} /*else {
 		// use file system specified via .zip file (path separator must be '/')
 		rc, err := zip.OpenReader(*zipfile)
 		if err != nil {
@@ -184,7 +184,7 @@ func main() {
 		}
 		defer rc.Close() // be nice (e.g., -writeIndex mode)
 		fs.Bind("/", NewZipFS(rc, *zipfile), *goroot, bindReplace)
-	}
+	}*/
 
 	// Bind $GOPATH trees into Go root.
 	for _, p := range filepath.SplitList(build.Default.GOPATH) {

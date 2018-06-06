@@ -9,8 +9,8 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"net/http"
 	"go/format"
+	"net/http"
 )
 
 // The server that will service compile and share requests.
