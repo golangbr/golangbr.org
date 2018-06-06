@@ -1,4 +1,5 @@
-##Golang Brasil Translation Task Force
+## Golang Brasil Translation Task Force
+[![Build Status](https://travis-ci.org/golangbr/golangbr.org.svg?branch=master)](https://travis-ci.org/golangbr/golangbr.org)
 
 Estrutura do Repositório:
 ```
