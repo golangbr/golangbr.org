@@ -1,4 +1,4 @@
-package goplay
+package main
 
 import "google.golang.org/appengine"
 
