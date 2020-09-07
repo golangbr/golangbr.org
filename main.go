@@ -1,7 +1,16 @@
 package main
 
-import "google.golang.org/appengine"
+import (
+	"net/http"
+	"os"
+)
 
 func main() {
-	appengine.Main()
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+	if err := http.ListenAndServe(":"+port, nil); err != nil {
+		panic(err)
+	}
 }
