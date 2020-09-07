@@ -147,18 +147,25 @@ window.initFuncs.push(function() {
 });
 </script>
 <script>
-YUI().use('datatype-date','yql', function(Y){
-    var query = 'select * from rss(0,15) where url = "https://groups.google.com/forum/feed/golang-brasil/topics/rss.xml"'
-    var q = Y.YQL(query, function(r){
-        //r now contains the result of the YQL Query as a JSON
-        var feedmarkup = ''
-        var feed = r.query.results.item // get feed as array of entries
+$.ajax({
+        url: 'https://api.rss2json.com/v1/api.json',
+        method: 'GET',
+        dataType: 'json',
+        data: {
+            rss_url: 'https://groups.google.com/forum/feed/golang-brasil/topics/rss.xml'
+        }
+}).done(function (response) {
+    if(response.status != 'ok'){ throw response.message; }
+    
+    YUI().use('datatype-date', function(Y){
+	var feedmarkup = ''
+        var feed = response.items // get feed as array of entries
         for (var i=0; i<feed.length; i++){
-	    feedmarkup += '<a href="' + feed[i].link + '" target="_blank">'
-	    var date1 = Y.Date.parse(feed[i].pubDate, "%F")
+            feedmarkup += '<a href="' + feed[i].link + '" target="_blank">'
+            var date1 = Y.Date.parse(feed[i].pubDate, "%F")
             feedmarkup += Y.DataType.Date.format(date1, { format: "%d/%m/%Y" })+ ' - ' + feed[i].title + '</a><br />'
         }
-        document.getElementById('golangbr').innerHTML = feedmarkup
+    	document.getElementById('golangbr').innerHTML = feedmarkup
     })
-})
+});
 </script>
